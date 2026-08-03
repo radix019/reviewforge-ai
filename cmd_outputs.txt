@@ -1,0 +1,22 @@
+>>> Creating a new Turborepo with:
+
+Application packages
+ - apps/docs
+ - apps/web
+Library packages
+ - packages/eslint-config
+ - packages/typescript-config
+ - packages/ui
+
+>>> Success! Your new Turborepo is ready.
+
+To get started:
+- Enable Remote Caching (recommended): pnpm dlx turbo login
+   - Learn more: https://turborepo.dev/remote-cache
+
+- Run commands with Turborepo:
+   - pnpm run build: Build all apps and packages
+   - pnpm run dev: Develop all apps and packages
+   - pnpm run lint: Lint all apps and packages
+- Run a command twice to hit cache
+
