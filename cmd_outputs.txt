@@ -19,4 +19,6 @@ To get started:
    - pnpm run dev: Develop all apps and packages
    - pnpm run lint: Lint all apps and packages
 - Run a command twice to hit cache
-
+===============================================
+run prisma schema: pnpm prisma migrate dev --name init
+Open visual on localhost: pnpm prisma studio
