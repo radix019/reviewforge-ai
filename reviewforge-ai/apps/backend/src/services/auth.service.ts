@@ -3,7 +3,7 @@ import { hashPassword, comparePassword } from "../utils/password";
 import { generateAccessToken } from "../utils/jwt";
 
 export class AuthService {
-  constructor(private readonly userRepository = new UserRepository()) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   async register(name: string, email: string, password: string) {
     const existingUser = await this.userRepository.findByEmail(email);
