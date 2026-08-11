@@ -21,6 +21,7 @@ export class AuthController {
   };
 
   login = async (req: Request, res: Response, next: NextFunction) => {
+    console.log("PROBLEM!");
     try {
       const result = await this.authService.login(
         req.body.email,
