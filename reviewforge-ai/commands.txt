@@ -1,0 +1,1 @@
+For updating prisma (to be run just once, whenever tables updated or added): pnpm prisma migrate dev --name add_repository
