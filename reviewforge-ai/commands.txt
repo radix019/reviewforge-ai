@@ -1,1 +1,3 @@
 For updating prisma (to be run just once, whenever tables updated or added): pnpm prisma migrate dev --name add_repository
+
+2. prisma migrate reset: to delete the database schema and data.
