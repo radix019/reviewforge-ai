@@ -1,13 +1,4 @@
-import { User } from "@prisma/client";
 import { Repository } from "../generated/prisma";
-export interface IUserRespository {
-  findByEmail(email: string): Promise<User | null>;
-  create(data: {
-    name: string;
-    email: string;
-    passwordHash: string;
-  }): Promise<User>;
-}
 
 export interface RepositoryStore {
   create(data: {

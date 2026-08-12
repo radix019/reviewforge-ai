@@ -1,16 +1,9 @@
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "@prisma/client";
+// Don't use import { PrismaClient } from "@prisma/client"; since we have generated our own Prisma Client using the pnpm prisma generate using /schema.prisma that will contains our models like User & Repository
+import { PrismaClient } from "../generated/prisma/client";
 import { env } from "./env";
 
 const adapter = new PrismaPg({
   connectionString: env.DATABASE_URL,
 });
-const globalForPrisma = globalThis as {
-  prisma?: PrismaClient;
-};
-
-export const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter });
-
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
-}
+export const prisma = new PrismaClient({ adapter });

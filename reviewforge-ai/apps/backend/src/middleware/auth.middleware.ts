@@ -2,12 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { env } from "../config/env";
 
-export interface AuthenticatedRequest extends Request {
-  user: {
-    id: string;
-    role: string;
-  };
-}
+// export interface AuthenticatedRequest extends Request {
+//   user: {
+//     id: string;
+//     role: string;
+//   };
+// } This interface is no longer needed since overridden of Request at the global level: in file /express.d.ts
 
 export function authMiddleware(
   req: Request,
@@ -37,7 +37,7 @@ export function authMiddleware(
         message: "Invalid Token",
       });
     }
-    (req as AuthenticatedRequest).user = {
+    req.user = {
       id: payload.sub,
       role: payload.role,
     };
