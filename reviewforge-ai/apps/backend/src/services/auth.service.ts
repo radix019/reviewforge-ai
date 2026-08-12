@@ -1,9 +1,9 @@
-import { UserRepository } from "../repositories/user.repository";
 import { hashPassword, comparePassword } from "../utils/password";
 import { generateAccessToken } from "../utils/jwt";
+import { IUserRespository } from "../repositories/Interfaces";
 
 export class AuthService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(private readonly userRepository: IUserRespository) {}
 
   async register(name: string, email: string, password: string) {
     const existingUser = await this.userRepository.findByEmail(email);

@@ -2,6 +2,10 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 // Get a free hosted Postgres database in seconds: `npx create-db`
+enum Role {
+  USER
+  ADMIN
+}
 
 generator client {
   provider = "prisma-client-js"
@@ -19,9 +23,21 @@ model User {
   role         Role     @default(USER)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  repositories Repository[]
 }
 
-enum Role {
-  USER
-  ADMIN
+model Repository {
+  id        String   @id @default(cuid())
+  name      String
+  fullName  String
+  url       String
+  provider  String
+  ownerId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId])
 }
