@@ -18,8 +18,8 @@ export class AuthService {
       passwordHash,
     });
 
-    const accessToken = generateAccessToken(user.id, user.role);
-    return { accessToken };
+    // const accessToken = generateAccessToken(user.id, user.role);
+    return { message: "User Registered successfully!" };
   }
 
   async login(email: string, password: string) {

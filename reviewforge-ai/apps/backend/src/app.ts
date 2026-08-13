@@ -4,6 +4,7 @@ import helmet from "helmet";
 const morgan = require("morgan");
 
 import authRoutes from "./routes/auth.routes";
+import repositoryRoutes from "./routes/repository.routes";
 import { errorHandler } from "./middleware/errorHandler";
 import { authMiddleware } from "./middleware/auth.middleware";
 
@@ -13,6 +14,7 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 app.use("/api/auth", authRoutes);
+app.use("/api/repositories", repositoryRoutes);
 
 app.get("/health", (_, res) => {
   res.json({
