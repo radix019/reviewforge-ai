@@ -23,6 +23,7 @@ model User {
   updatedAt    DateTime @updatedAt
 
   repositories Repository[]
+  gitHubConnection GitHubConnection?
 }
 
 model Repository {
@@ -38,4 +39,16 @@ model Repository {
   owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
   @@index([ownerId])
+}
+model GitHubConnection {
+  id           String   @id @default(cuid())
+  githubUserId String   @unique
+  username     String
+  accessToken  String
+
+  userId       String   @unique
+  user         User     @relation(fields: [userId],references: [id],onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

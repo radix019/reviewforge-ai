@@ -1,5 +1,5 @@
 import { User } from "@prisma/client";
-import { Repository } from "../generated/prisma";
+import { GitHubConnection, Repository } from "../generated/prisma/client";
 export interface IUserRespository {
   findByEmail(email: string): Promise<User | null>;
   create(data: {
@@ -23,4 +23,17 @@ export interface RepositoryStore {
   findById(id: string): Promise<Repository | null>;
 
   delete(id: string): Promise<Repository>;
+}
+
+export interface GitHubConnectionStore {
+  create(data: {
+    githubUserId: string;
+    username: string;
+    accessToken: string;
+    userId: string;
+  }): Promise<GitHubConnection>;
+
+  findByUserId(userId: string): Promise<GitHubConnection | null>;
+
+  findByGithubUserId(githubUserId: string): Promise<GitHubConnection | null>;
 }
