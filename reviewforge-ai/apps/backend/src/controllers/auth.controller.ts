@@ -26,7 +26,15 @@ export class AuthController {
         req.body.email,
         req.body.password,
       );
-      res.status(200).json(result);
+      res.cookie("access_token", result.accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+      return res.status(200).json({
+        user: result.user,
+      });
     } catch (err) {
       next(err);
     }

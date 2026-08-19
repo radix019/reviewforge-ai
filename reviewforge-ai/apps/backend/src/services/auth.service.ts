@@ -34,6 +34,6 @@ export class AuthService {
       throw new Error("Invalid Credentials");
     }
     const accessToken = generateAccessToken(user.id, user.role);
-    return { accessToken };
+    return { accessToken, user };
   }
 }
