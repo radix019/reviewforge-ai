@@ -16,7 +16,7 @@ export class GitHubController {
       };
 
       res.cookie("github_oath_state", state, COOKIE_OPTIONS);
-      res.cookie("github_oauth_user", req.user!.id, COOKIE_OPTIONS);
+      res.cookie("github_oauth_user", req.user?.id, COOKIE_OPTIONS);
 
       const authorizationUrl = this.githubservice.getAuthorizationURL(state);
 
@@ -38,11 +38,29 @@ export class GitHubController {
         return res.status(403).json({ message: "Invalid OAuth State" });
       }
 
+      const userId = req.cookies.github_oauth_user;
+      if (!userId) {
+        return res.status(401).json({
+          message: "GitHub OAuth user not found",
+        });
+      }
+
       const accessToken = await this.githubservice.exchangeCodeForToken(code);
+
       const githubUser =
         await this.githubservice.getAuthenticatedUser(accessToken);
 
-      res.json({ message: "GitHub connected successfully", githubUser });
+      await this.githubservice.saveConnection({
+        githubUserId: githubUser.id.toString(),
+        username: githubUser.login,
+        accessToken,
+        userId,
+      });
+
+      res.clearCookie("github_oauth_state");
+      res.clearCookie("github_oauth_user");
+
+      return res.json({ message: "GitHub connected successfully", githubUser });
     } catch (error) {
       next(error);
     }

@@ -1,7 +1,32 @@
 import crypto from "crypto";
 import { env } from "../config/env";
+import { GitHubConnectionStore } from "../repositories/Interfaces";
+import { encrypt } from "../utils/encryption";
 
 export class GitHubService {
+  constructor(private readonly githubConnectionStore: GitHubConnectionStore) {}
+
+  async saveConnection(data: {
+    githubUserId: string;
+    username: string;
+    accessToken: string;
+    userId: string;
+  }) {
+    const existingConnection =
+      await this.githubConnectionStore.findByGithubUserId(data.githubUserId);
+    if (existingConnection) {
+      throw new Error("This GitHub account is already connected");
+    }
+    const encryptedToken = encrypt(data.accessToken);
+
+    return this.githubConnectionStore.create({
+      githubUserId: data.githubUserId,
+      username: data.username,
+      accessToken: encryptedToken,
+      userId: data.userId,
+    });
+  }
+
   generateState() {
     return crypto.randomBytes(32).toString("hex");
   }
