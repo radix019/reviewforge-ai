@@ -36,4 +36,12 @@ export class AuthService {
     const accessToken = generateAccessToken(user.id, user.role);
     return { accessToken, user };
   }
+
+  async getCurrentUser(id: string) {
+    const user = await this.userRepository.findById(id);
+    if (!user) {
+      throw new Error("User not found!");
+    }
+    return user;
+  }
 }

@@ -14,11 +14,12 @@ export function authMiddleware(
   res: Response,
   next: NextFunction,
 ) {
+  // const authorization = req.headers.authorization;
   const cookieToken = req.cookies.access_token;
 
   if (!cookieToken) {
     return res.status(401).json({
-      message: "Authentication required",
+      message: "Authentication Required!",
     });
   }
 
@@ -33,6 +34,7 @@ export function authMiddleware(
       id: payload.sub,
       role: payload.role,
     };
+    console.log("USER : ", req.user);
     next();
   } catch (error) {
     return res.status(401).json({

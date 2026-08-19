@@ -14,6 +14,7 @@ export async function apiClient(path: string, options: ApiOptions = {}) {
   const response = await fetch(`${API_URL}${path}`, {
     ...fetchOptions,
     headers,
+    credentials: "include",
   });
   const data = await response.json();
 
