@@ -35,7 +35,12 @@ export class AuthController {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
       return res.status(200).json({
-        user: result.user,
+        user: {
+          id: result.user.id,
+          name: result.user.name,
+          email: result.user.email,
+          role: result.user.role,
+        },
       });
     } catch (err) {
       next(err);

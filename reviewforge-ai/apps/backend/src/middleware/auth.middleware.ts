@@ -34,7 +34,6 @@ export function authMiddleware(
       id: payload.sub,
       role: payload.role,
     };
-    console.log("USER : ", req.user);
     next();
   } catch (error) {
     return res.status(401).json({
