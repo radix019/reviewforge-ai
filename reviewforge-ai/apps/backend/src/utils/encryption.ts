@@ -4,10 +4,9 @@ import { env } from "../config/env";
 const ALGORITHM = "aes-256-gcm";
 const KEY = Buffer.from(env.GITHUB_TOKEN_ENCRYPTION_KEY!, "hex");
 
-if (KEY.length !== 64) {
-  throw new Error("GITHUB_TOKEN_ENCRYPTION_KEY must be exactly 64 bytes");
+if (KEY.length !== 32) {
+  throw new Error("GITHUB_TOKEN_ENCRYPTION_KEY must be exactly 32 bytes");
 }
-
 export function encrypt(text: string) {
   const iv = crypto.randomBytes(12);
 

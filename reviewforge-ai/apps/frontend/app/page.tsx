@@ -1,26 +1,16 @@
-import Image, { type ImageProps } from "next/image";
-import { Button } from "@repo/ui/button";
+"use client";
+import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 
-type Props = Omit<ImageProps, "src"> & {
-  srcLight: string;
-  srcDark: string;
-};
-
-const ThemeImage = (props: Props) => {
-  const { srcLight, srcDark, ...rest } = props;
-
-  return (
-    <>
-      <Image {...rest} src={srcLight} className="imgLight" />
-      <Image {...rest} src={srcDark} className="imgDark" />
-    </>
-  );
-};
-
 export default function Home() {
+  const router = useRouter();
+  const handleClick = () => {
+    router.replace("/login");
+  };
   return (
     <div className={styles.page}>
+      <button onClick={handleClick}>Login</button>
+      <h1>This is ReviewForge Ai</h1>
       <main className={styles.main}></main>
     </div>
   );

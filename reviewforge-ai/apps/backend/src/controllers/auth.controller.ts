@@ -46,6 +46,21 @@ export class AuthController {
       next(err);
     }
   };
+  logout = async (_: Request, res: Response, next: NextFunction) => {
+    try {
+      res.clearCookie("access_token", {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        path: "/",
+      });
+      return res.status(200).json({
+        message: "Logged out successfully!",
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
   getCurrentUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const user = await this.authService.getCurrentUser(
