@@ -14,6 +14,9 @@ export class UserRepository implements IUserRespository {
       data,
     });
   }
+  async findById(id: string): Promise<User | null> {
+    return prisma.user.findUnique({ where: { id } });
+  }
 }
 
 export class FakeUserRespository implements IUserRespository {
@@ -30,5 +33,8 @@ export class FakeUserRespository implements IUserRespository {
       createdAt: new Date(),
       updatedAt: new Date(),
     } as User;
+  }
+  async findById(id: string): Promise<User | null> {
+    return null;
   }
 }

@@ -14,24 +14,17 @@ export function authMiddleware(
   res: Response,
   next: NextFunction,
 ) {
-  const authorization = req.headers.authorization;
+  // const authorization = req.headers.authorization;
+  const cookieToken = req.cookies.access_token;
 
-  if (!authorization) {
+  if (!cookieToken) {
     return res.status(401).json({
-      message: "Authentication required",
-    });
-  }
-
-  const [scheme, token] = authorization.split(" ");
-
-  if (scheme !== "Bearer" || !token) {
-    return res.status(401).json({
-      message: "Invalid authorization header",
+      message: "Authentication Required!",
     });
   }
 
   try {
-    const payload = jwt.verify(token, env.JWT_SECRET);
+    const payload = jwt.verify(cookieToken, env.JWT_SECRET);
     if (typeof payload !== "object" || !payload.sub || !payload.role) {
       return res.status(401).json({
         message: "Invalid Token",

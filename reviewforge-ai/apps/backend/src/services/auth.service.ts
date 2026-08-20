@@ -18,8 +18,8 @@ export class AuthService {
       passwordHash,
     });
 
-    const accessToken = generateAccessToken(user.id, user.role);
-    return { accessToken };
+    // const accessToken = generateAccessToken(user.id, user.role);
+    return { message: "User Registered successfully!" };
   }
 
   async login(email: string, password: string) {
@@ -34,6 +34,14 @@ export class AuthService {
       throw new Error("Invalid Credentials");
     }
     const accessToken = generateAccessToken(user.id, user.role);
-    return { accessToken };
+    return { accessToken, user };
+  }
+
+  async getCurrentUser(id: string) {
+    const user = await this.userRepository.findById(id);
+    if (!user) {
+      throw new Error("User not found!");
+    }
+    return user;
   }
 }

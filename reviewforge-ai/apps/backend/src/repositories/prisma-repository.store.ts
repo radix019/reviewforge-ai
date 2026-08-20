@@ -1,5 +1,5 @@
 import { prisma } from "../config/prisma";
-import { RepositoryStore } from "./repository.store";
+import { RepositoryStore } from "./Interfaces";
 
 export class PrismaRepositoryStore implements RepositoryStore {
   async create(data: {
