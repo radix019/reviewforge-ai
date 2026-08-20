@@ -83,4 +83,7 @@ export class GitHubService {
   async getConnection(userId: string) {
     return this.githubConnectionStore.findByUserId(userId);
   }
+  async disconnect(userId: string) {
+    await this.githubConnectionStore.deleteByUserId(userId);
+  }
 }

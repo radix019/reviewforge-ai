@@ -11,8 +11,8 @@ export default function LoginPage() {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("rahul@example.com");
+  const [password, setPassword] = useState("Password123");
 
   const [error, setError] = useState<string | null>(null);
 

@@ -18,8 +18,9 @@ export default function DashboardPage() {
     useState<GitHubConnection | null>(null);
 
   const [isGitHubLoading, setIsGitHubLoading] = useState(true);
+  const [showGitHubConnectedMessage, setShowGitHubConnectedMessage] =
+    useState(false);
 
-  const githubConnected = searchParams.get("github") === "connected";
   const handleLogOut = async () => {
     try {
       await apiClient("/api/auth/logout", {
@@ -35,6 +36,17 @@ export default function DashboardPage() {
   const handleConnectGithub = () => {
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/github/connect`;
   };
+  const handleDisconnectGitHub = async () => {
+    try {
+      await apiClient("/api/github/connection", {
+        method: "DELETE",
+      });
+      setGithubConnection(null);
+      setShowGitHubConnectedMessage(false);
+    } catch (error) {
+      console.log(`Couldn't delete the GitHub connection : ${error}`);
+    }
+  };
 
   useEffect(() => {
     apiClient("/api/github/connection")
@@ -48,7 +60,13 @@ export default function DashboardPage() {
         setIsGitHubLoading(false);
       });
   }, []);
-  console.log("githubConnection", githubConnection);
+
+  useEffect(() => {
+    if (searchParams.get("github") === "connected") {
+      setShowGitHubConnectedMessage(true);
+      router.replace("/dashboard");
+    }
+  }, [searchParams, router]);
   return (
     <ProtectedRoute>
       <main>
@@ -60,9 +78,12 @@ export default function DashboardPage() {
 
             <p>Role: {auth.user?.role}</p>
 
+            <hr />
+            <h2>GitHub details</h2>
+
             {isGitHubLoading ? (
               <p> Checking Github connection... </p>
-            ) : githubConnected ? (
+            ) : showGitHubConnectedMessage ? (
               <div>
                 <p>
                   GitHub connected as:{" "}
@@ -73,10 +94,15 @@ export default function DashboardPage() {
             ) : (
               <button onClick={handleConnectGithub}>Connect GitHub</button>
             )}
+            <hr />
+
             <button onClick={handleLogOut}>Logout</button>
           </>
         ) : (
           <p>You are not authenticated.</p>
+        )}
+        {githubConnection && (
+          <button onClick={handleDisconnectGitHub}>Disconnect GitHub</button>
         )}
       </main>
     </ProtectedRoute>

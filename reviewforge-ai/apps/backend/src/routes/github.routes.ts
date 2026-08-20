@@ -9,6 +9,7 @@ const githubConnectionStore = new PrismaGitHubConnectionStore();
 const githubservice = new GitHubService(githubConnectionStore);
 const gitHubController = new GitHubController(githubservice);
 
+router.delete("/connection", authMiddleware, gitHubController.disconnect);
 router.get("/connect", authMiddleware, gitHubController.connect);
 router.get("/callback", gitHubController.callback);
 router.get("/connection", authMiddleware, gitHubController.getConnection);

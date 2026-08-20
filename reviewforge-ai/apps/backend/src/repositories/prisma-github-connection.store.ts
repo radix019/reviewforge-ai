@@ -34,4 +34,11 @@ export class PrismaGitHubConnectionStore implements GitHubConnectionStore {
       },
     });
   }
+  async deleteByUserId(userId: string): Promise<void> {
+    await prisma.gitHubConnection.delete({
+      where: {
+        userId,
+      },
+    });
+  }
 }

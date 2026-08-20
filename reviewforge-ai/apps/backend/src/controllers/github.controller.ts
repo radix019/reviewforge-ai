@@ -83,4 +83,14 @@ export class GitHubController {
       next(error);
     }
   };
+  disconnect = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await this.githubservice.disconnect(req.user?.id as string);
+      return res.status(200).json({
+        message: "GitHub disconnected successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
