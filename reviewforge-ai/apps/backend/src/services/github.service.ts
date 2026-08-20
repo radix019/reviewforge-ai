@@ -80,4 +80,7 @@ export class GitHubService {
     }
     return response.json();
   }
+  async getConnection(userId: string) {
+    return this.githubConnectionStore.findByUserId(userId);
+  }
 }

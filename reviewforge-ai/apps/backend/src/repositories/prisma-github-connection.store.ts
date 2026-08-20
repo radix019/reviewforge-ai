@@ -18,6 +18,12 @@ export class PrismaGitHubConnectionStore implements GitHubConnectionStore {
       where: {
         userId,
       },
+      select: {
+        id: true,
+        githubUserId: true,
+        username: true,
+        userId: true,
+      },
     });
   }
 

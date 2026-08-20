@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction, CookieOptions } from "express";
 import { GitHubService } from "../services/github.service";
+import { env } from "../config/env";
 
 export class GitHubController {
   constructor(private readonly githubservice: GitHubService) {}
@@ -60,7 +61,24 @@ export class GitHubController {
       res.clearCookie("github_oauth_state");
       res.clearCookie("github_oauth_user");
 
-      return res.json({ message: "GitHub connected successfully", githubUser });
+      return res.redirect(`${env.FRONTEND_URL}/dashboard?github=connected`);
+    } catch (error) {
+      next(error);
+    }
+  };
+  getConnection = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const connection = await this.githubservice.getConnection(
+        req.user?.id as string,
+      );
+      if (!connection) {
+        return res.status(404).json({
+          message: "Github account not connected",
+        });
+      }
+      return res.status(200).json({
+        connection,
+      });
     } catch (error) {
       next(error);
     }
