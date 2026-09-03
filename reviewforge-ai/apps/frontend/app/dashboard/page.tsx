@@ -50,6 +50,23 @@ export default function DashboardPage() {
       console.log(`Couldn't delete the GitHub connection : ${error}`);
     }
   };
+  const handleImportRepository = async (repo: Repositories) => {
+    console.log("repo", repo);
+    try {
+      const data = await apiClient(`${API_GTHUB}/repositories`, {
+        method: "POST",
+        body: JSON.stringify({
+          name: repo.name,
+          fullName: repo.fullName,
+          url: repo.url,
+          provider: "github",
+        }),
+      });
+      console.log("IMPORTED REPO: ", data.repository);
+    } catch (error) {
+      console.error("Import failed:", error);
+    }
+  };
 
   useEffect(() => {
     apiClient(`${API_GTHUB}/connection`)
@@ -120,7 +137,12 @@ export default function DashboardPage() {
         <ul>
           {repositories.length &&
             repositories.map((repo: Repositories) => (
-              <li key={repo.githubId}>{repo.fullName}</li>
+              <>
+                <li key={repo.githubId}>{repo.fullName}</li>
+                <button onClick={() => handleImportRepository(repo)}>
+                  Import
+                </button>
+              </>
             ))}
         </ul>
       </main>

@@ -13,4 +13,5 @@ export type Repositories = {
   private: boolean;
   updatedAt: string;
   url: string;
+  provider: string;
 };

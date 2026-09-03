@@ -50,4 +50,23 @@ export class RepositoryController {
       next(error);
     }
   };
+  importRepository = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    console.log("GOING");
+    try {
+      const repository = await this.repositoryService.importRepository(
+        req.user?.id as string,
+        req.body,
+      );
+      console.log("repository", repository);
+      return res.status(201).json({
+        repository,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

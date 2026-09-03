@@ -36,4 +36,14 @@ export class RepositoryService {
 
     return this.repositoryStore.delete(id);
   }
+
+  async importRepository(
+    userId: string,
+    data: { name: string; fullName: string; url: string; provider: string },
+  ) {
+    return this.repositoryStore.create({
+      ...data,
+      ownerId: userId,
+    });
+  }
 }

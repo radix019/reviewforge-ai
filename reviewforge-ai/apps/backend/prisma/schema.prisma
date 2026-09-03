@@ -29,7 +29,7 @@ model User {
 model Repository {
   id        String   @id @default(cuid())
   name      String
-  fullName  String
+  fullName  String    
   url       String
   provider  String
   ownerId   String
@@ -39,6 +39,7 @@ model Repository {
   owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
   @@index([ownerId])
+  @@unique([ownerId, fullName])
 }
 model GitHubConnection {
   id           String   @id @default(cuid())
