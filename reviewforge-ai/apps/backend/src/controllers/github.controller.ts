@@ -93,4 +93,16 @@ export class GitHubController {
       next(error);
     }
   };
+  getRepositories = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const repositories = await this.githubservice.getRepositories(
+        req.user?.id as string,
+      );
+      return res.status(200).json({
+        repositories,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

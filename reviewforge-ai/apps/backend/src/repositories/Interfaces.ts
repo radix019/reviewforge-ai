@@ -41,6 +41,14 @@ export interface GitHubConnectionStore {
     userId: string;
   } | null>;
 
+  findConnectionByUserId(userId: string): Promise<{
+    id: string;
+    githubUserId: string;
+    username: string;
+    userId: string;
+    accessToken: string;
+  } | null>;
+
   findByGithubUserId(githubUserId: string): Promise<GitHubConnection | null>;
 
   deleteByUserId(userId: string): Promise<void>;

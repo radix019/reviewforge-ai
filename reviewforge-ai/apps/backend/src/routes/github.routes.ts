@@ -13,5 +13,5 @@ router.delete("/connection", authMiddleware, gitHubController.disconnect);
 router.get("/connect", authMiddleware, gitHubController.connect);
 router.get("/callback", gitHubController.callback);
 router.get("/connection", authMiddleware, gitHubController.getConnection);
-
+router.get("/repositories", authMiddleware, gitHubController.getRepositories);
 export default router;

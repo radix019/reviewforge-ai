@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import { env } from "../config/env";
 import { GitHubConnectionStore } from "../repositories/Interfaces";
-import { encrypt } from "../utils/encryption";
+import { decrypt, encrypt } from "../utils/encryption";
 
 export class GitHubService {
   constructor(private readonly githubConnectionStore: GitHubConnectionStore) {}
@@ -85,5 +85,37 @@ export class GitHubService {
   }
   async disconnect(userId: string) {
     await this.githubConnectionStore.deleteByUserId(userId);
+  }
+  async getRepositories(userId: string) {
+    const connection =
+      await this.githubConnectionStore.findConnectionByUserId(userId);
+    if (!connection) {
+      throw new Error("GitHub account not connected!");
+    }
+    const accessToken = decrypt(connection.accessToken);
+    const response = await fetch(
+      "https://api.github.com/user/repos?per_page=100&sort=updated",
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: "application/vnd.github+json",
+        },
+      },
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch GitHub Repositories");
+    }
+    const repositories = await response.json();
+
+    return repositories.map((repo: any) => ({
+      githubId: repo.id.toString(),
+      name: repo.name,
+      fullName: repo.full_name,
+      url: repo.html_url,
+      private: repo.private,
+      defaultBranch: repo.default_branch,
+      language: repo.language,
+      updatedAt: repo.updated_at,
+    }));
   }
 }

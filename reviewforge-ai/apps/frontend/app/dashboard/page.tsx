@@ -6,7 +6,9 @@ import { logout } from "../../features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { apiClient } from "../../lib/apiClient";
 import { useEffect, useState } from "react";
-import { GitHubConnection } from "../../interfaces";
+import { GitHubConnection, Repositories } from "../../interfaces";
+const API_GTHUB = "/api/github";
+const API_AUTH = "/api/auth";
 
 export default function DashboardPage() {
   const auth = useAppSelector((state) => state.auth);
@@ -20,10 +22,11 @@ export default function DashboardPage() {
   const [isGitHubLoading, setIsGitHubLoading] = useState(true);
   const [showGitHubConnectedMessage, setShowGitHubConnectedMessage] =
     useState(false);
+  const [repositories, setRepositories] = useState<Repositories[]>([]);
 
   const handleLogOut = async () => {
     try {
-      await apiClient("/api/auth/logout", {
+      await apiClient(`${API_AUTH}/logout`, {
         method: "POST",
       });
     } catch (error) {
@@ -34,11 +37,11 @@ export default function DashboardPage() {
     }
   };
   const handleConnectGithub = () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/github/connect`;
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}${API_GTHUB}/connect`;
   };
   const handleDisconnectGitHub = async () => {
     try {
-      await apiClient("/api/github/connection", {
+      await apiClient(`${API_GTHUB}/connection`, {
         method: "DELETE",
       });
       setGithubConnection(null);
@@ -49,7 +52,7 @@ export default function DashboardPage() {
   };
 
   useEffect(() => {
-    apiClient("/api/github/connection")
+    apiClient(`${API_GTHUB}/connection`)
       .then((data) => {
         setGithubConnection(data.connection);
       })
@@ -67,6 +70,16 @@ export default function DashboardPage() {
       router.replace("/dashboard");
     }
   }, [searchParams, router]);
+
+  useEffect(() => {
+    if (!githubConnection) return;
+    apiClient(`${API_GTHUB}/repositories`)
+      .then((data) => {
+        setRepositories(data.repositories);
+      })
+      .catch(console.error);
+  }, [githubConnection]);
+
   return (
     <ProtectedRoute>
       <main>
@@ -104,6 +117,12 @@ export default function DashboardPage() {
         {githubConnection && (
           <button onClick={handleDisconnectGitHub}>Disconnect GitHub</button>
         )}
+        <ul>
+          {repositories.length &&
+            repositories.map((repo: Repositories) => (
+              <li key={repo.githubId}>{repo.fullName}</li>
+            ))}
+        </ul>
       </main>
     </ProtectedRoute>
   );

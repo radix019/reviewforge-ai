@@ -9,7 +9,7 @@ import repositoryRoutes from "./routes/repository.routes";
 import githubRoutes from "./routes/github.routes";
 import { errorHandler } from "./middleware/errorHandler";
 import { authMiddleware } from "./middleware/auth.middleware";
-
+const API = "/api";
 const app = express();
 app.use(
   cors({
@@ -25,9 +25,9 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/api/auth", authRoutes);
-app.use("/api/repositories", repositoryRoutes);
-app.use("/api/github", githubRoutes);
+app.use(`${API}/auth`, authRoutes);
+app.use(`${API}/repositories`, repositoryRoutes);
+app.use(`${API}/github`, githubRoutes);
 
 app.get("/health", (_, res) => {
   res.json({

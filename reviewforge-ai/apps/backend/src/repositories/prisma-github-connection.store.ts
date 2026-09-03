@@ -26,6 +26,18 @@ export class PrismaGitHubConnectionStore implements GitHubConnectionStore {
       },
     });
   }
+  async findConnectionByUserId(userId: string) {
+    return prisma.gitHubConnection.findUnique({
+      where: { userId },
+      select: {
+        id: true,
+        githubUserId: true,
+        username: true,
+        userId: true,
+        accessToken: true,
+      },
+    });
+  }
 
   async findByGithubUserId(githubUserId: string) {
     return prisma.gitHubConnection.findUnique({
