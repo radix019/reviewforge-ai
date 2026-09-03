@@ -7,8 +7,9 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { apiClient } from "../../lib/apiClient";
 import { useEffect, useState } from "react";
 import { GitHubConnection, Repositories } from "../../interfaces";
-const API_GTHUB = "/api/github";
-const API_AUTH = "/api/auth";
+import { Button } from "@mui/material";
+export const API_GTHUB = "/api/github";
+export const API_AUTH = "/api/auth";
 
 export default function DashboardPage() {
   const auth = useAppSelector((state) => state.auth);
@@ -122,7 +123,13 @@ export default function DashboardPage() {
                 <p>Connected</p>
               </div>
             ) : (
-              <button onClick={handleConnectGithub}>Connect GitHub</button>
+              <Button
+                onClick={handleConnectGithub}
+                variant="contained"
+                color="primary"
+              >
+                Connect GitHub
+              </Button>
             )}
             <hr />
 
@@ -137,12 +144,12 @@ export default function DashboardPage() {
         <ul>
           {repositories.length &&
             repositories.map((repo: Repositories) => (
-              <>
+              <div key={repo.githubId}>
                 <li key={repo.githubId}>{repo.fullName}</li>
                 <button onClick={() => handleImportRepository(repo)}>
                   Import
                 </button>
-              </>
+              </div>
             ))}
         </ul>
       </main>
