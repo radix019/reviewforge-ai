@@ -7,7 +7,9 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { apiClient } from "../../lib/apiClient";
 import { useEffect, useState } from "react";
 import { GitHubConnection, Repositories } from "../../interfaces";
-import { Button } from "@mui/material";
+import { Box, Button, Card, Grid, Stack, Typography } from "@mui/material";
+import ButtonAppBar from "../../components/ButtonAppBar";
+import VerifiedIcon from "@mui/icons-material/Verified";
 export const API_GTHUB = "/api/github";
 export const API_AUTH = "/api/auth";
 
@@ -100,59 +102,87 @@ export default function DashboardPage() {
 
   return (
     <ProtectedRoute>
-      <main>
-        <h1>ReviewForge</h1>
-
-        {auth.isAuthenticated ? (
-          <>
-            <p>Welcome, {auth.user?.name}</p>
-
-            <p>Role: {auth.user?.role}</p>
-
-            <hr />
-            <h2>GitHub details</h2>
-
-            {isGitHubLoading ? (
-              <p> Checking Github connection... </p>
-            ) : showGitHubConnectedMessage ? (
-              <div>
-                <p>
-                  GitHub connected as:{" "}
-                  <strong>@{githubConnection?.username}</strong>
-                </p>
-                <p>Connected</p>
-              </div>
-            ) : (
-              <Button
-                onClick={handleConnectGithub}
-                variant="contained"
-                color="primary"
-              >
-                Connect GitHub
-              </Button>
-            )}
-            <hr />
-
-            <button onClick={handleLogOut}>Logout</button>
-          </>
-        ) : (
-          <p>You are not authenticated.</p>
-        )}
-        {githubConnection && (
-          <button onClick={handleDisconnectGitHub}>Disconnect GitHub</button>
-        )}
-        <ul>
-          {repositories.length &&
-            repositories.map((repo: Repositories) => (
-              <div key={repo.githubId}>
-                <li key={repo.githubId}>{repo.fullName}</li>
-                <button onClick={() => handleImportRepository(repo)}>
-                  Import
-                </button>
-              </div>
-            ))}
-        </ul>
-      </main>
+      <Box component="main">
+        <ButtonAppBar userName={auth.user?.name} handleLogOut={handleLogOut} />
+        <Grid container>
+          <Grid size={4}>
+            <Box sx={{ backgroundColor: "primary.200", height: "90vh" }}>
+              {auth.isAuthenticated ? (
+                <Stack
+                  direction="row"
+                  sx={{
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "2rem",
+                  }}
+                >
+                  {githubConnection ? (
+                    <Typography variant="h4" component="h1">
+                      {githubConnection?.username}{" "}
+                      <VerifiedIcon color="success" />
+                    </Typography>
+                  ) : (
+                    <Typography variant="h4" component="h1">
+                      Connect GitHub repository
+                    </Typography>
+                  )}
+                  <Box>
+                    {githubConnection ? (
+                      <Button
+                        onClick={handleDisconnectGitHub}
+                        variant="contained"
+                        sx={{
+                          backgroundColor: "secondary.dark",
+                          color: "#000",
+                        }}
+                      >
+                        Disconnect GitHub
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={handleConnectGithub}
+                        variant="contained"
+                        color="primary"
+                      >
+                        Connect GitHub
+                      </Button>
+                    )}
+                  </Box>
+                </Stack>
+              ) : (
+                <Typography component="text">
+                  You are not authenticated.
+                </Typography>
+              )}
+            </Box>
+          </Grid>
+          <Grid size={8}>
+            <Box
+              sx={{
+                backgroundColor: "primary.light",
+                height: "90vh",
+                padding: "2rem",
+                overflowY: "scroll",
+              }}
+            >
+              <Stack direction="column">
+                {repositories.length &&
+                  repositories.map((repo: Repositories) => (
+                    <Card
+                      key={repo.githubId}
+                      sx={{ padding: "2rem", marginBottom: "1rem" }}
+                    >
+                      {repo.fullName}
+                      <button onClick={() => handleImportRepository(repo)}>
+                        Import
+                      </button>
+                    </Card>
+                  ))}
+              </Stack>
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
     </ProtectedRoute>
   );
 }
