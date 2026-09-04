@@ -1,7 +1,7 @@
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
-import "./globals.css";
-import { Providers } from "./providers";
-import ThemeRegistry from "./theme/ThemeRegistry";
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
+import './globals.css';
+import { Providers } from './providers';
+import ThemeRegistry from './theme/ThemeRegistry';
 
 export default function RootLayout({
   children,
