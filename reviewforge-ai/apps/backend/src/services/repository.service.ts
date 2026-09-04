@@ -1,7 +1,11 @@
 import { RepositoryStore } from "../repositories/Interfaces";
+import { GitHubService } from "./github.service";
 
 export class RepositoryService {
-  constructor(private readonly repositoryStore: RepositoryStore) {}
+  constructor(
+    private readonly repositoryStore: RepositoryStore,
+    private readonly githubService: GitHubService,
+  ) {}
 
   async createRepository(data: {
     name: string;
@@ -45,5 +49,18 @@ export class RepositoryService {
       ...data,
       ownerId: userId,
     });
+  }
+  async getFiles(userId: string, repositoryId: string) {
+    const repository = await this.repositoryStore.findById(repositoryId);
+    if (!repository) {
+      throw new Error("Repository not found!");
+    }
+    if (repository.ownerId !== userId) {
+      throw new Error("Repository not found!");
+    }
+    return this.githubService.getRepositoryContents(
+      userId,
+      repository.fullName,
+    );
   }
 }

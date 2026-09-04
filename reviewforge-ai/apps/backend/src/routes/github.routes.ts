@@ -12,7 +12,7 @@ const githubConnectionStore = new PrismaGitHubConnectionStore();
 const githubservice = new GitHubService(githubConnectionStore);
 const gitHubController = new GitHubController(githubservice);
 const repositoryStore = new PrismaRepositoryStore();
-const repositoryService = new RepositoryService(repositoryStore);
+const repositoryService = new RepositoryService(repositoryStore, githubservice);
 const repositoryController = new RepositoryController(repositoryService);
 
 router.delete("/connection", authMiddleware, gitHubController.disconnect);

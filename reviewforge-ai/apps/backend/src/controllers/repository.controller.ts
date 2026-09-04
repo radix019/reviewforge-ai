@@ -61,10 +61,20 @@ export class RepositoryController {
         req.user?.id as string,
         req.body,
       );
-      console.log("repository", repository);
       return res.status(201).json({
         repository,
       });
+    } catch (error) {
+      next(error);
+    }
+  };
+  getFiles = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const files = await this.repositoryService.getFiles(
+        req.user?.id as string,
+        req.params?.id as string,
+      );
+      res.status(200).json({ files });
     } catch (error) {
       next(error);
     }

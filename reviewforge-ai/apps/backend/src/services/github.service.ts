@@ -118,4 +118,34 @@ export class GitHubService {
       updatedAt: repo.updated_at,
     }));
   }
+  async getRepositoryContents(userId: string, fullName: string, path = "") {
+    const connection =
+      await this.githubConnectionStore.findConnectionByUserId(userId);
+    if (!connection) {
+      throw new Error("GitHub account not connected");
+    }
+    const accessToken = decrypt(connection.accessToken);
+    const response = await fetch(
+      `https://api.github.com/repos/${fullName}/contents/${path}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: "application/vnd.github+json",
+        },
+      },
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch repository contents");
+    }
+    const data = await response.json();
+    return Array.isArray(data)
+      ? data.map((item) => ({
+          name: item.name,
+          path: item.path,
+          type: item.type,
+          size: item.size,
+          sha: item.sha,
+        }))
+      : data;
+  }
 }

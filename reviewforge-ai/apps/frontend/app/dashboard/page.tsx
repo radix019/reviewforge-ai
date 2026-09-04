@@ -106,81 +106,82 @@ export default function DashboardPage() {
         <ButtonAppBar userName={auth.user?.name} handleLogOut={handleLogOut} />
         <Grid container>
           <Grid size={4}>
-            <Box sx={{ backgroundColor: "primary.200", height: "90vh" }}>
-              {auth.isAuthenticated ? (
-                <Stack
-                  direction="row"
-                  sx={{
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "2rem",
-                  }}
-                >
-                  {githubConnection ? (
-                    <Typography variant="h4" component="h1">
-                      {githubConnection?.username}{" "}
-                      <VerifiedIcon color="success" />
-                    </Typography>
-                  ) : (
-                    <Typography variant="h4" component="h1">
-                      Connect GitHub repository
-                    </Typography>
-                  )}
-                  <Box>
+            <Stack direction="column">
+              <Box sx={{ backgroundColor: "primary.200" }}>
+                {auth.isAuthenticated ? (
+                  <Stack
+                    direction="row"
+                    sx={{
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      padding: "2rem",
+                    }}
+                  >
                     {githubConnection ? (
-                      <Button
-                        onClick={handleDisconnectGitHub}
-                        variant="contained"
-                        sx={{
-                          backgroundColor: "secondary.dark",
-                          color: "#000",
-                        }}
-                      >
-                        Disconnect GitHub
-                      </Button>
+                      <Typography variant="h4" component="h1">
+                        {githubConnection?.username}{" "}
+                        <VerifiedIcon color="success" />
+                      </Typography>
                     ) : (
-                      <Button
-                        onClick={handleConnectGithub}
-                        variant="contained"
-                        color="primary"
-                      >
-                        Connect GitHub
-                      </Button>
+                      <Typography variant="h4" component="h1">
+                        Connect GitHub repository
+                      </Typography>
                     )}
-                  </Box>
+                    <Box>
+                      {githubConnection ? (
+                        <Button
+                          onClick={handleDisconnectGitHub}
+                          variant="contained"
+                          sx={{
+                            backgroundColor: "secondary.dark",
+                            color: "#000",
+                          }}
+                        >
+                          Disconnect GitHub
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={handleConnectGithub}
+                          variant="contained"
+                          color="primary"
+                        >
+                          Connect GitHub
+                        </Button>
+                      )}
+                    </Box>
+                  </Stack>
+                ) : (
+                  <Typography component="text">
+                    You are not authenticated.
+                  </Typography>
+                )}
+              </Box>
+              <Box
+                sx={{
+                  backgroundColor: "primary.light",
+                  height: "80vh",
+                  padding: "2rem",
+                  overflowY: "scroll",
+                }}
+              >
+                <Stack direction="column">
+                  {repositories.length &&
+                    repositories.map((repo: Repositories) => (
+                      <Card
+                        key={repo.githubId}
+                        sx={{ padding: "1.5rem", marginBottom: "1.5rem" }}
+                      >
+                        {repo.fullName}
+                        <button onClick={() => handleImportRepository(repo)}>
+                          Import
+                        </button>
+                      </Card>
+                    ))}
                 </Stack>
-              ) : (
-                <Typography component="text">
-                  You are not authenticated.
-                </Typography>
-              )}
-            </Box>
+              </Box>
+            </Stack>
           </Grid>
-          <Grid size={8}>
-            <Box
-              sx={{
-                backgroundColor: "primary.light",
-                height: "90vh",
-                padding: "2rem",
-                overflowY: "scroll",
-              }}
-            >
-              <Stack direction="column">
-                {repositories.length &&
-                  repositories.map((repo: Repositories) => (
-                    <Card
-                      key={repo.githubId}
-                      sx={{ padding: "2rem", marginBottom: "1rem" }}
-                    >
-                      {repo.fullName}
-                      <button onClick={() => handleImportRepository(repo)}>
-                        Import
-                      </button>
-                    </Card>
-                  ))}
-              </Stack>
-            </Box>
-          </Grid>
+          <Grid size={8}></Grid>
         </Grid>
       </Box>
     </ProtectedRoute>
