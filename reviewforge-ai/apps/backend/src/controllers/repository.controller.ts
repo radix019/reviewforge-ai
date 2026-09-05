@@ -55,7 +55,6 @@ export class RepositoryController {
   getFiles = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const path = typeof req.query.path === 'string' ? req.query.path : '';
-
       const files = await this.repositoryService.getFiles(req.user?.id as string, req.params?.id as string, path);
       res.status(200).json({ files, path });
     } catch (error) {
@@ -72,9 +71,12 @@ export class RepositoryController {
       }
 
       const file = await this.repositoryService.getFileContent(req.user?.id as string, req.params.id as string, path);
+      console.log('FILE', file);
       return res.status(200).json({
         file,
       });
-    } catch (error) {}
+    } catch (error) {
+      next(error);
+    }
   };
 }

@@ -7,13 +7,14 @@ import { Repository } from '../generated/prisma';
 export class GitHubService {
   constructor(private readonly githubConnectionStore: GitHubConnectionStore) {}
 
-  private buildContentUrl(fullName: string, path = '') {
+  private buildContentsUrl(fullName: string, path: string) {
     const [owner, repo] = fullName.split('/');
+    console.log({ owner, repo, path });
     if (!owner || !repo) {
-      throw new Error('Invalid repository name');
+      throw new Error(`Invalid repository name: ${fullName}`);
     }
-    const baseUrl = `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents`;
-
+    const baseUrl =
+      `https://api.github.com/repos/` + `${encodeURIComponent(owner)}/` + `${encodeURIComponent(repo)}/contents`;
     if (!path) {
       return baseUrl;
     }
@@ -119,20 +120,20 @@ export class GitHubService {
       updatedAt: repo.updated_at,
     }));
   }
-  async getRepositoryContents(userId: string, fullName: string, path = '') {
+  async getRepositoryContents(userId: string, fullName: string, path: string) {
     const connection = await this.githubConnectionStore.findConnectionByUserId(userId);
-
+    console.log('getRepositoryContents userId:', userId);
+    console.log({ fullName, path });
     if (!connection) {
       throw new Error('GitHub account not connected');
     }
     const accessToken = decrypt(connection.accessToken);
-    const response = await fetch(this.buildContentUrl(fullName, path), {
+    const response = await fetch(this.buildContentsUrl(fullName, path), {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         Accept: 'application/vnd.github+json',
       },
     });
-
     if (!response.ok) {
       throw new Error('Failed to fetch repository contents' + response.status);
     }
@@ -151,12 +152,11 @@ export class GitHubService {
   }
   async getFileContent(userId: string, fullName: string, path: string) {
     const connection = await this.githubConnectionStore.findByGithubUserId(userId);
-
     if (!connection) {
       throw new Error('GitHub account not connected!');
     }
     const accessToken = decrypt(connection.accessToken);
-    const response = await fetch(this.buildContentUrl(fullName, path), {
+    const response = await fetch(this.buildContentsUrl(fullName, path), {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         Accept: 'application/vnd.github+json',
@@ -175,7 +175,6 @@ export class GitHubService {
     if (!data.content || data.encoding !== 'base64') {
       throw new Error('File content is unavailable!');
     }
-    console.log('data.content', data.content);
     const content = Buffer.from(data.content, 'base64').toString('utf8');
     return {
       name: data.name,

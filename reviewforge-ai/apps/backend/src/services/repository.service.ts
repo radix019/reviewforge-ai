@@ -50,6 +50,7 @@ export class RepositoryService {
   }
   async getFiles(userId: string, repositoryId: string, path = '') {
     const repository = await this.getOwnedRepository(userId, repositoryId);
+    console.log('repository', repository);
     return this.githubService.getRepositoryContents(userId, repository.fullName, path);
   }
   async getFileContent(userId: string, repositoryId: string, path: string) {
