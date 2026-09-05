@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from "express";
-import { RepositoryService } from "../services/repository.service";
+import { Request, Response, NextFunction } from 'express';
+import { RepositoryService } from '../services/repository.service';
 
 export class RepositoryController {
   constructor(private readonly repositoryService: RepositoryService) {}
@@ -20,9 +20,7 @@ export class RepositoryController {
   };
   getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const repositories = await this.repositoryService.getRepositories(
-        req.user!.id,
-      );
+      const repositories = await this.repositoryService.getRepositories(req.user!.id);
       res.status(200).json(repositories);
     } catch (error) {
       next(error);
@@ -30,10 +28,7 @@ export class RepositoryController {
   };
   getById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const repository = await this.repositoryService.getRepository(
-        req.params.id as string,
-        req.user!.id,
-      );
+      const repository = await this.repositoryService.getRepository(req.params.id as string, req.user!.id);
       res.json(repository);
     } catch (error) {
       next(error);
@@ -41,26 +36,15 @@ export class RepositoryController {
   };
   delete = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await this.repositoryService.deleteRepository(
-        req.params.id as string,
-        req.user!.id,
-      );
+      await this.repositoryService.deleteRepository(req.params.id as string, req.user!.id);
       res.status(204).send(`Repository with ID: ${req.params.id} is DELETED!`);
     } catch (error) {
       next(error);
     }
   };
-  importRepository = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => {
-    console.log("GOING");
+  importRepository = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const repository = await this.repositoryService.importRepository(
-        req.user?.id as string,
-        req.body,
-      );
+      const repository = await this.repositoryService.importRepository(req.user?.id as string, req.body);
       return res.status(201).json({
         repository,
       });
@@ -70,11 +54,27 @@ export class RepositoryController {
   };
   getFiles = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const files = await this.repositoryService.getFiles(
-        req.user?.id as string,
-        req.params?.id as string,
-      );
-      res.status(200).json({ files });
+      const path = typeof req.query.path === 'string' ? req.query.path : '';
+      const files = await this.repositoryService.getFiles(req.user?.id as string, req.params?.id as string, path);
+      res.status(200).json({ files, path });
+    } catch (error) {
+      next(error);
+    }
+  };
+  getFileContent = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const path = typeof req.query.path === 'string' ? req.query.path : '';
+      if (!path) {
+        return res.status(400).json({
+          message: 'File path is required',
+        });
+      }
+
+      const file = await this.repositoryService.getFileContent(req.user?.id as string, req.params.id as string, path);
+      console.log('FILE', file);
+      return res.status(200).json({
+        file,
+      });
     } catch (error) {
       next(error);
     }
